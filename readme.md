@@ -17,17 +17,17 @@ Many banner to one Node.
 
 # MVC
 
-This was a try at MVC
+This was a try at MVC and it was an early try so not that great.
 
-## Model.inc
+### Model.inc
 
 This will output the banner info based on the node id or banner id
 
-## View.inc
+### View.inc
 
 Different outputs 
 
-## Controller.inc
+### Controller.inc
 
 This has, for some reasons, the forms as well (@todo move this to View.inc)
 And some of the crud.
