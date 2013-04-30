@@ -1,0 +1,9 @@
+.banner-default {
+    text-decoration: underline;
+}
+
+.control-group.form-type-radios.form-item-banner.form-item {
+    overflow: auto;
+    height: 121px;
+}
+

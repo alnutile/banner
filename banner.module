@@ -1,0 +1,101 @@
+<?php
+/**
+ * @file
+ * Output the banner related to the page.
+ * Banners are a node type that can reference a page.
+ *
+ */
+
+
+/**
+ * Require the Model, Views and Controllers
+ */
+
+require_once('Controllers/Controller.inc');
+require_once('Views/View.inc');
+require_once('Models/Model.inc');
+
+
+function banner_node_view($node) {
+	if($node->type == 'banner') {
+		$relatedNodes = new ViewsRelatedNodes(array('nid' => $node->nid));
+		$relatedNodes = $relatedNodes->listOutput();
+		$node->content['body'] = array('#markup' => $relatedNodes, '#weight' => 2);
+	}
+}
+
+function banner_page_alter(&$page){
+	$banner = '';
+	if(is_numeric(arg(1)) && arg(0) == 'node') {
+		$nid = arg(1);
+		$bannerCheck = new ControllerBanner($nid);
+		$banner = $bannerCheck->returnBanner();
+	} else {
+		//Not a node get Default Banner
+		$banner = new ViewsBanner();
+		$banner = $banner->ViewDefaultBanner();
+	}
+	$page['banner'] =  array('#markup' => $banner);
+}
+
+function banner_form_alter(&$form, $form_state, $form_id) {
+
+
+
+	$nodes = banner_targets();
+	foreach($nodes as $key) {
+		if($form_id == $key['form_id']) {
+			$path = drupal_get_path('module', 'banner');
+			drupal_add_css($path . '/js/multi/jquery.multiselect.css');
+			drupal_add_css($path . 'js/multi/jquery.multiselect.filter.css');
+			drupal_add_js($path . '/js/multi/src/jquery.multiselect.js');
+			drupal_add_js($path . '/js/multi/src/jquery.multiselect.filter.js');
+
+			if($key['type'] == 'banner') {
+				$path = arg(1);
+				$args = array('path' => $path);
+				$bannerFormField = new bannerFieldController($args);
+				$formBanner = $bannerFormField->buildRelationsFormField($key);
+				$form += $formBanner;
+			} else {
+				$path = arg(1);
+				$args = array('path' => $path);
+				$bannerFormField = new bannerFieldController($args);
+				$formBanner = $bannerFormField->buildRelationsFormField($key);
+				$form += $formBanner;
+			}
+		}
+	}
+}
+
+
+
+
+function banner_node_delete($node){
+	$types = banner_targets();
+	$params = array('targets' => $types, 'action' => 'delete', 'node' => $node);
+	$processBanner = new bannerProcessController($params);
+	$processBanner->delete();
+}
+
+function banner_node_insert($node) {
+	$types = banner_targets();
+	$params = array('targets' => $types, 'action' => 'insert', 'node' => $node);
+	$processBanner = new bannerProcessController($params);
+	$processBanner->insert();
+}
+
+function banner_node_update($node) {
+	$types = banner_targets();
+	$params = array('targets' => $types, 'action' => 'update', 'node' => $node);
+	$processBanner = new bannerProcessController($params);
+	$processBanner->update();
+}
+
+function banner_targets(){
+	return array(
+		'page' => array('nicename' => 'Page', 'type' => 'page', 'form_id' => 'page_node_form', 'multi' => FALSE),
+		'webform' => array('nicename' => 'Webform', 'type' => 'webform', 'form_id' => 'webform_node_form', 'multi' => FALSE),
+		'banner' => array('nicename' => 'Banner', 'type' => 'banner', 'form_id' => 'banner_node_form', 'multi' => TRUE),
+	);
+}

@@ -1,0 +1,11 @@
+name = Banner Module
+description = Banners Related to a Page
+package = FreshJones Creative
+core = 7.x
+; files[] = menu_example.test
+; dependencies[] = taxonomy
+stylesheets[all][] = css/banner.css
+
+; configure = admin/config/ojsettings
+; more info http://drupal.org/node/542202
+scripts[] = js/banner.js

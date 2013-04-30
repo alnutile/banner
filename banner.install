@@ -1,0 +1,37 @@
+<?php
+
+
+function banner_schema(){
+	$schema['banner_relations'] = array(
+			'descriptions' => 'Relates banner nid to page nid',
+			'fields' => array(
+				'pid' => array(
+					'type' => 'serial',
+					'not null' => TRUE,
+					'description' => 'Primary ID',
+				),
+				'bannernid' => array(
+					'type' => 'int',
+					'not null' => TRUE,
+					'default' => 0,
+					'description' => "The ID of the banner",
+				),
+				'entity' => array(
+					'type' => 'int',
+					'not null' => TRUE,
+					'default' => 0,
+					'description' => "The ID of the node or other entity",
+				),
+			),
+		'primary key' => array('pid'),
+	);
+return $schema;
+}
+
+
+/**
+ * Add table for banner module
+ */
+function banner_update_7200() {
+	drupal_install_schema('banner_schema');
+}
